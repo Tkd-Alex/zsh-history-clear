@@ -5,12 +5,15 @@ from datetime import datetime
 
 OLDER_THAN = 30 * 6 #DAYS
 LESS_THAN = 3
+GREATER_THAN = 2500
 START_WITH = [ 'git commit', 'git add' ]
 REMOVE_WITH_EXCEPTION = True
 REMOVE_DUPLICATE = True
 
+PATH_FILE = ""
+
 if __name__ == '__main__':
-    with open("zsh_history", "rb") as f:
+    with open(PATH_FILE, "rb") as f:
       content = f.readlines()
 
     content.reverse()
@@ -29,6 +32,7 @@ if __name__ == '__main__':
                 if OLDER_THAN != None and (datetime.now() - datetime.fromtimestamp(timestamp) ).days >= OLDER_THAN:
                     remove_line = True
                 command = data[1].strip().replace('0;', '')
+
                 if REMOVE_DUPLICATE is True:
                     if command not in commands_extracted:
                         commands_extracted.append(command)
@@ -37,7 +41,11 @@ if __name__ == '__main__':
 
                 if LESS_THAN != None and len(command) <= LESS_THAN:
                     remove_line = True
-                elif START_WITH != None:
+                
+                if LESS_THAN != None and len(command) >= GREATER_THAN:
+                    remove_line = True
+                
+                if START_WITH != None:
                     for startswith in START_WITH:
                         if command.startswith(startswith):
                             remove_line = True
@@ -55,5 +63,5 @@ if __name__ == '__main__':
     newhistory = [ content[i].decode('utf-8').strip('\n') for i in range(0, len(content)) if i not in index_to_remove ]
     print("New history len: {}".format(len(newhistory)))
 
-    with open('zsh_history', 'w') as f:
+    with open(PATH_FILE, 'w') as f:
         f.write('\n'.join(newhistory))
