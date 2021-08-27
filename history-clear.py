@@ -63,5 +63,6 @@ if __name__ == '__main__':
     newhistory = [ content[i].decode('utf-8').strip('\n') for i in range(0, len(content)) if i not in index_to_remove ]
     print("New history len: {}".format(len(newhistory)))
 
+    newhistory.reverse()
     with open(PATH_FILE, 'w') as f:
         f.write('\n'.join(newhistory))
